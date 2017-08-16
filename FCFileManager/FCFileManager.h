@@ -7,7 +7,11 @@
 
 #import <Foundation/Foundation.h>
 #import <ImageIO/ImageIO.h>
+#if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
+#else
+#import <AppKit/AppKit.h>
+#endif
 
 @interface FCFileManager : NSObject
 
@@ -119,12 +123,16 @@
 +(NSData *)readFileAtPathAsData:(NSString *)path error:(NSError **)error;
 
 +(NSDictionary *)readFileAtPathAsDictionary:(NSString *)path;
-
+#if TARGET_OS_IPHONE
 +(UIImage *)readFileAtPathAsImage:(NSString *)path;
 +(UIImage *)readFileAtPathAsImage:(NSString *)path error:(NSError **)error;
 
 +(UIImageView *)readFileAtPathAsImageView:(NSString *)path;
 +(UIImageView *)readFileAtPathAsImageView:(NSString *)path error:(NSError **)error;
+#else
++(NSImage *)readFileAtPathAsImage:(NSString *)path;
++(NSImage *)readFileAtPathAsImage:(NSString *)path error:(NSError **)error;
+#endif
 
 +(NSJSONSerialization *)readFileAtPathAsJSON:(NSString *)path;
 +(NSJSONSerialization *)readFileAtPathAsJSON:(NSString *)path error:(NSError **)error;

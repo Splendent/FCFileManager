@@ -672,7 +672,7 @@
     return [NSDictionary dictionaryWithContentsOfFile:[self absolutePath:path]];
 }
 
-
+#if TARGET_OS_IPHONE
 +(UIImage *)readFileAtPathAsImage:(NSString *)path
 {
     return [self readFileAtPathAsImage:path error:nil];
@@ -711,7 +711,25 @@
 
     return nil;
 }
+#else
++(NSImage *)readFileAtPathAsImage:(NSString *)path
+{
+    return [self readFileAtPathAsImage:path error:nil];
+}
 
+
++(NSImage *)readFileAtPathAsImage:(NSString *)path error:(NSError **)error
+{
+    NSData *data = [self readFileAtPathAsData:path error:error];
+
+    if([self isNotError:error])
+    {
+        return [[NSImage alloc] initWithData:data];
+    }
+
+    return nil;
+}
+#endif
 
 +(NSJSONSerialization *)readFileAtPathAsJSON:(NSString *)path
 {
@@ -1098,6 +1116,7 @@
     {
         [[((NSString *)content) dataUsingEncoding:NSUTF8StringEncoding] writeToFile:absolutePath atomically:YES];
     }
+#if TARGET_OS_IPHONE
     else if([content isKindOfClass:[UIImage class]])
     {
         [UIImagePNGRepresentation((UIImage *)content) writeToFile:absolutePath atomically:YES];
@@ -1106,6 +1125,20 @@
     {
         return [self writeFileAtPath:absolutePath content:((UIImageView *)content).image error:error];
     }
+#else
+    else if([content isKindOfClass:[NSImage class]])
+    {
+        NSImage * image = ((NSImage *)content);
+        CGImageRef cgRef = [image CGImageForProposedRect:NULL
+                                                 context:nil
+                                                   hints:nil];
+        NSBitmapImageRep *newRep = [[NSBitmapImageRep alloc] initWithCGImage:cgRef];
+        [newRep setSize:[image size]];   // if you want the same resolution
+        NSData *pngData = [newRep representationUsingType:NSPNGFileType properties:@{}];
+        [pngData writeToFile:absolutePath atomically:YES];
+        
+    }
+#endif
     else if([content conformsToProtocol:@protocol(NSCoding)])
     {
         [NSKeyedArchiver archiveRootObject:content toFile:absolutePath];
@@ -1258,4 +1291,3 @@
 
 
 @end
-
