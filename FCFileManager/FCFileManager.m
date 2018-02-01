@@ -424,8 +424,9 @@
     return [subpaths filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
 
         NSString *subpath = (NSString *)evaluatedObject;
-
-        return ([subpath hasPrefix:prefix] || [subpath isEqualToString:prefix]);
+        NSString *fileName = [subpath lastPathComponent];
+        
+        return ([fileName hasPrefix:prefix] || [fileName isEqualToString:prefix]);
     }]];
 }
 
@@ -1226,7 +1227,7 @@
         free(ukeys);
     }
 
-    return [NSDictionary dictionaryWithObjects:[values allKeys] forKeys:[values allValues]];
+    return [NSDictionary dictionaryWithObjects:[values allValues] forKeys:[values allKeys]];
 }
 
 
