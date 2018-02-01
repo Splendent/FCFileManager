@@ -1,3 +1,6 @@
+
+#Warning, this is modded version for cross-platform usage#
+=============
 FCFileManager ![Pod version](http://img.shields.io/cocoapods/v/FCFileManager.svg) ![Pod platforms](http://img.shields.io/cocoapods/p/FCFileManager.svg) ![Pod license](http://img.shields.io/cocoapods/l/FCFileManager.svg)
 =============
 
